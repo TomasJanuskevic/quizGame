@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Log
@@ -64,5 +65,17 @@ public class OngoingGameService {
     public boolean proceedToNextQuestion() {
         currentQuestionIndex++;
         return currentQuestionIndex < questions.size();
+    }
+
+    public Difficulty getDifficulty() {
+        return gameOptions.getDifficulty();
+    }
+
+    public String getCategoryName() {
+        Optional<String> category = quizDataService.getQuizCategories().stream()
+                .filter(categoryDto -> categoryDto.getId() == gameOptions.getCategoryId())
+                .map(categoryDto -> categoryDto.getName())
+                .findAny();
+        return category.orElse(null);
     }
 }

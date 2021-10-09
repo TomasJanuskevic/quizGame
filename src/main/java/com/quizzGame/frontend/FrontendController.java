@@ -42,7 +42,27 @@ public class FrontendController {
         model.addAttribute("currentQuestionNumber", ongoingGameService.getCurrentQuestionNumber());
         model.addAttribute("totalQuestionNumber", ongoingGameService.getTotalQuestionNumber());
         model.addAttribute("currentQuestion", ongoingGameService.getCurrentQuestion());
-        model.addAttribute("currentQuestionAnswer", ongoingGameService.getCurrentQuestionAnswersInRandomOrder());
+        model.addAttribute("currentQuestionAnswers", ongoingGameService.getCurrentQuestionAnswersInRandomOrder());
         return "game";
+    }
+
+    @PostMapping("/game")
+    public String postSelectForm(Model model, @ModelAttribute UserAnswer userAnswer){
+        ongoingGameService.checkAnswerForCurrentQuestionAndUpdatePoints(userAnswer.getAnswer());
+        boolean hasNextQuestion = ongoingGameService.proceedToNextQuestion();
+        if(hasNextQuestion){
+            return "redirect:game";
+        } else {
+            return "redirect:summary";
+        }
+    }
+
+    @GetMapping("/summary")
+    public String summary(Model model){
+        model.addAttribute("difficulty", ongoingGameService.getDifficulty());
+        model.addAttribute("categoryName", ongoingGameService.getCategoryName());
+        model.addAttribute("points", ongoingGameService.getPoints());
+        model.addAttribute("maxPoints", ongoingGameService.getTotalQuestionNumber());
+        return "summary";
     }
 }

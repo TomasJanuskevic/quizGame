@@ -22,11 +22,10 @@ public class QuizDataService {
 
     public List<QuestionsDto.QuestionDto> getQuizQuestions(GameOptions gameOptions) {
         RestTemplate restTemplate = new RestTemplate();
-
         URI uri = UriComponentsBuilder.fromHttpUrl("https://opentdb.com/api.php")
                 .queryParam("amount", gameOptions.getNumberOfQuestions())
                 .queryParam("category", gameOptions.getCategoryId())
-                .queryParam("difficulty", gameOptions.getDifficulty())
+                .queryParam("difficulty", gameOptions.getDifficulty().name().toLowerCase())
                 .build().toUri();
         log.info("Quiz question URL: " + uri);
         QuestionsDto result = restTemplate.getForObject(uri, QuestionsDto.class);
